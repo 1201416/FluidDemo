@@ -21,7 +21,6 @@ export function EntrySpace(props: EntryProps) {
     const syncLocalAndFluidState = () => {
       const entryData: EntryData[] = [];
       const ids: string[] = model.entryIds;
-      console.log(ids.length)
       for (let entryId of ids) {
         const newCardData: EntryData = model.CreateEntry(entryId, props.author);
         entryData.push(newCardData);

@@ -1,6 +1,6 @@
 import { CommandBar,ICommandBarItemProps,Facepile,} from "@fluentui/react";
 import { AzureMember } from "@fluidframework/azure-client";
-import React from "react";
+import React, { useEffect } from "react";
 import { BoardModel } from "../../BoardModel";
 import { EntryData } from "../types/EntryData.ts";
 import { uuidv4 } from '../../utils.ts';
@@ -25,21 +25,23 @@ export const NOTE_SIZE = {
   export function Header(props: HeaderProps) {
     const personas = React.useMemo(() => props.members.map(member => {return { personaName: member.userName}}), [props.members]);
   
+    const {model} = props
+
     const onAddEntry = () => {
-     const id = uuidv4();
+        const id = uuidv4();
     
-     const newentry: EntryData = {
-        id: id,
-        position: {
+        const newentry: EntryData = {
+          id: id,
+          position: {
             x: Math.floor(Math.random() * (300 - NOTE_SIZE.width)),
             y: Math.floor(Math.random() * (80 - NOTE_SIZE.height)),
           },
-        author: props.author
-      };
-      props.model.SetEntry(id, newentry);
-      props.model.entryIds.push(id)
+          author: props.author
+        };
+        model.SetEntry(id, newentry);
+        model.entryIds.push(id);
     };
-  
+
     const items: ICommandBarItemProps[] = [
       {
         key: "add",

@@ -7,6 +7,7 @@ import { EntrySpace } from '../entry/EntrySpace.tsx';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Header } from './Header.tsx';
+import { EntryData } from '../types/EntryData.ts';
 
 interface BoardOpenedComponentProps {
   container: IFluidContainer;
@@ -27,7 +28,7 @@ const BoardOpenedComponent: React.FC<BoardOpenedComponentProps>=(props: {contain
       audience.getMembers().values()
     )
   ), [setMembers, audience]);
-  
+
   useEffect(() => {
       container.on("connected", setMembersCallback);
       audience.on("membersChanged", setMembersCallback);
@@ -40,7 +41,18 @@ const BoardOpenedComponent: React.FC<BoardOpenedComponentProps>=(props: {contain
 
   useEffect(() =>{
     const handleValueChanged = () => {
-      setModel({ ...model });
+      const modelo = model.entryIds;
+      if(modelo.length===0){
+        const entry: EntryData = {
+          id: "asduhasdhashdu",
+          author: authorInfo!,
+          position: {
+            x: 1,
+            y: 2
+          }
+        }
+        model.SetEntry("asduashduah", entry)
+      }
     };
     
     model.setChangeListener(handleValueChanged);
@@ -48,7 +60,7 @@ const BoardOpenedComponent: React.FC<BoardOpenedComponentProps>=(props: {contain
       model.removeChangeListener(handleValueChanged);
   };
   }, [model])
-  
+
   return (
     <div>
       <h1>{"BOARD DEVSCOPE"}</h1>
