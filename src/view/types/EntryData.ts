@@ -1,9 +1,11 @@
 import { AzureMember, IUser } from "@fluidframework/azure-client";
-
+export type Position = {
+    x: number;
+    y: number;
+}
 export type EntryData = {
     id: string;
-    numCol: number;
-    numRow: number;
+    position: Position;
     content?: string;
     author: AzureMember;
 }

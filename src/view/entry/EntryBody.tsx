@@ -1,6 +1,7 @@
 import React from "react";
 import { TextField } from "@fluentui/react";
 import { EntryData } from "../types/EntryData";
+import { ColorId, ColorOptions } from "./Colors.ts";
 
 export type EntryBodyProps = Readonly<{
   setText(text: string): void;
@@ -9,10 +10,11 @@ export type EntryBodyProps = Readonly<{
 
 export function EntryBody(props: EntryBodyProps) {
   const { setText, content } = props;
-
+  const color: ColorId = "Blue"
   return (
     <div style={{ flex: 1 }}>
       <TextField
+        styles={{ fieldGroup: { background:  ColorOptions[color].light  } }}
         borderless
         multiline
         resizable={false}

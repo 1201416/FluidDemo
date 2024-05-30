@@ -12,7 +12,10 @@ export const ENTRY_SIZE = {
 export const DefaultColor ={
     base: "#0078D4", dark: "#99C9EE", light: "#CCE4F6"
 }
-  
+export const NOTE_SIZE = {
+    width: 250,
+    height: 75
+  }
   export interface HeaderProps {
     model: BoardModel;
     author: AzureMember;
@@ -24,16 +27,17 @@ export const DefaultColor ={
   
     const onAddEntry = () => {
      const id = uuidv4();
-     console.log(id)
-      const newentry: EntryData = {
+    
+     const newentry: EntryData = {
         id: id,
-        numCol: Math.floor(Math.random()* ENTRY_SIZE.height),
-        numRow: Math.floor(Math.random()* ENTRY_SIZE.width),
+        position: {
+            x: Math.floor(Math.random() * (300 - NOTE_SIZE.width)),
+            y: Math.floor(Math.random() * (80 - NOTE_SIZE.height)),
+          },
         author: props.author
       };
-      console.log("1")
       props.model.SetEntry(id, newentry);
-      console.log("2")
+      props.model.entryIds.push(id)
     };
   
     const items: ICommandBarItemProps[] = [

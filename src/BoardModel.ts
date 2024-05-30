@@ -1,17 +1,15 @@
 import { IFluidContainer, ISharedMap, SharedMap } from "fluid-framework";
 import { AzureMember } from "@fluidframework/azure-client";
-import { EntryData } from "./view/types/EntryData";
+import { EntryData, Position } from "./view/types/EntryData";
 
 const c_entryIdPrefix = "entryId_";
-const c_columnPrefix = "numCol_";
-const c_rowPrefix = "numRow_";
+const c_positionPrefix = "position_";
 const c_TextPrefix = "text_";
 const c_authorPrefix = "author_"
 
 export type BoardModel = Readonly<{
   CreateEntry(entryId: string, author: AzureMember): EntryData;
-  MoveEntryCol(entryId: string, numberCol: number): void;
-  MoveEntryRow(entryId: string, numberCol: number): void;
+  MoveEntry(entryId: string, position: Position): void;
   SetEntry(entryId: string, newCardData: EntryData): void;
   SetEntryContent(entryId: string, entryText: string): void;
   DeleteEntry(entryId: string): void;
@@ -22,13 +20,7 @@ export type BoardModel = Readonly<{
 }>;
 
 export function createBoardModel(fluid: IFluidContainer): BoardModel {
-  const sharedMap: ISharedMap = fluid.initialObjects.customMap as SharedMap;
-  
-  if (!sharedMap) {
-    console.log(fluid)
-    console.log(sharedMap)
-    throw new Error("SharedMap is not properly initialized");
-  }
+  const sharedMap: ISharedMap = fluid.initialObjects.entries as SharedMap;
   
   const IsDeletedEntry = (entryId: string) => {
     return sharedMap.get(c_entryIdPrefix + entryId) === 0;
@@ -42,33 +34,23 @@ export function createBoardModel(fluid: IFluidContainer): BoardModel {
     CreateEntry(entryId: string, author: AzureMember): EntryData {
       const newEntry: EntryData = {
         id: entryId,
-        numCol: sharedMap.get(c_columnPrefix + entryId)!,
-        numRow: sharedMap.get(c_rowPrefix + entryId)!,
+        position: sharedMap.get(c_positionPrefix + entryId)!,
         content: sharedMap.get(c_TextPrefix + entryId),
         author: sharedMap.get(c_authorPrefix+entryId)!
       };
       return newEntry;
     },
 
-    MoveEntryCol(entryId: string, newCol: number) {
-      sharedMap.set(c_columnPrefix + entryId, newCol);
+    MoveEntry(entryId: string, newPos: Position) {
+      sharedMap.set(c_positionPrefix + entryId, newPos);
     },
-    MoveEntryRow(entryId: string, newRow: number) {
-        sharedMap.set(c_rowPrefix + entryId, newRow);
-      },
+    
 
     SetEntry(entryId: string, newCardData: EntryData) {
       sharedMap.set(c_entryIdPrefix + entryId, 1);
-      sharedMap.set(c_entryIdPrefix + entryId, 2);
-      sharedMap.set(c_entryIdPrefix + entryId, 3);
-      sharedMap.set(c_entryIdPrefix + entryId, 4);
-      sharedMap.set(c_entryIdPrefix + entryId, 5);
-      sharedMap.set(c_entryIdPrefix + entryId, 6);
-      sharedMap.set(c_entryIdPrefix + entryId, 7);
-      sharedMap.set(c_entryIdPrefix + entryId, 8);
-      sharedMap.set(c_entryIdPrefix + entryId, 9);
+      sharedMap.set(c_positionPrefix+entryId, newCardData.position)
       sharedMap.set(c_authorPrefix+entryId, newCardData.author);
-      if (newCardData.content !== undefined) {
+      if (newCardData.content !== undefined && newCardData.content !==null) {
         SetEntryContent(newCardData.id, newCardData.content);
       } else {
         SetEntryContent(newCardData.id, "");
@@ -103,15 +85,13 @@ export function createBoardModel(fluid: IFluidContainer): BoardModel {
             .filter((entryId) =>
                 !IsDeletedEntry(entryId) && sharedMap.get(c_TextPrefix + entryId)
             ).map((id) =>{
-                const numCol = sharedMap.get(c_columnPrefix + id)
-                const numRow = sharedMap.get(c_rowPrefix + id)
+                const position = sharedMap.get(c_positionPrefix + id)
                 const content = sharedMap.get(c_TextPrefix + id)
                 const author = sharedMap.get(c_authorPrefix + id)
 
                 return{
                     id,
-                    numCol,
-                    numRow,
+                    position,
                     content,
                     author
                 };

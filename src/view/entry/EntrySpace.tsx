@@ -1,14 +1,13 @@
 import { IStyle, mergeStyles, ThemeProvider } from "@fluentui/react";
 import { AzureMember } from "@fluidframework/azure-client";
-import React, {useRef} from "react";
+import React, {useEffect, useCallback, useRef} from "react";
 import { BoardModel } from "../../BoardModel.ts";
-import { EntryData } from "../types/EntryData";
+import { EntryData, Position } from "../types/EntryData";
 import { useDrop } from "react-dnd"
 import { lightTheme } from "../../Themes.ts";
 import { Entry } from "./Entry.tsx";
 
 export type EntryProps = Readonly<{
-  entries: EntryData[]
   model: BoardModel;
   author: AzureMember;
 }>;
@@ -17,23 +16,22 @@ export function EntrySpace(props: EntryProps) {
   const { model } = props;
   const [entries, setEntries] = React.useState<readonly EntryData[]>([]);
 
-  React.useEffect(() => {
-    if(entries.length!==0){
+
+  useEffect(() => {
     const syncLocalAndFluidState = () => {
       const entryData: EntryData[] = [];
       const ids: string[] = model.entryIds;
-
+      console.log(ids.length)
       for (let entryId of ids) {
         const newCardData: EntryData = model.CreateEntry(entryId, props.author);
         entryData.push(newCardData);
       }
-      setEntries(entryData);
-    };
 
+      setEntries(entryData);
+    }
     syncLocalAndFluidState();
     model.setChangeListener(syncLocalAndFluidState);
-      return () => model.removeChangeListener(syncLocalAndFluidState);
-    }
+    return () => model.removeChangeListener(syncLocalAndFluidState);
   }, [model]);
 
   const rootStyle: IStyle = {
@@ -51,11 +49,11 @@ export function EntrySpace(props: EntryProps) {
       const delta = monitor.getDifferenceFromInitialOffset()!;
       const left = Math.round(item.left + delta.x);
       const top = Math.round(item.top + delta.y);
-      model.MoveEntryCol(item.id, 
-        top
-      )
-      model.MoveEntryRow(item.id,
-        left
+      model.MoveEntry(item.id, {
+        x: left > 0 ? left : 0,
+        y: top > 0 ? top: 0
+        
+      }
       )
       return undefined;
     },
@@ -73,12 +71,8 @@ export function EntrySpace(props: EntryProps) {
     <div id="Entry" ref={dropRef} className={spaceClass}>
       <ThemeProvider theme={lightTheme}>
         {entries.map((entry) => {
-          const setColumn = (position: number) => {
-            model.MoveEntryCol(entry.id, position);
-          };
-
-          const setRow = (position: number) => {
-            model.MoveEntryRow(entry.id, position);
+          const setPosition = (position: Position) => {
+            model.MoveEntry(entry.id, position);
           };
 
           const setText = (text: string) => {
@@ -95,8 +89,7 @@ export function EntrySpace(props: EntryProps) {
               id={entry.id}
               key={entry.id}
               user={props.author}
-              setColumn={setColumn}
-              setRow={setRow}
+              setPosition={setPosition}
               onDelete={onDelete}
               setText={setText}
             />

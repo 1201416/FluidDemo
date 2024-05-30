@@ -11,9 +11,7 @@ const OpenBoard: React.FC = () => {
     useEffect(()=>{
         const initialize = async() =>{
             initializeIcons();
-
             let {container, services} = await getFluidContainer();
-        
             if (container.connectionState===2) {
                 await new Promise<void>((resolve) => {
                     container.once("connected", () => {
@@ -21,6 +19,7 @@ const OpenBoard: React.FC = () => {
                     });
                 });
             }
+
             setContainer(container);
             setServices(services);
         }

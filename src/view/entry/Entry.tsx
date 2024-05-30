@@ -1,23 +1,21 @@
 import { AzureMember } from "@fluidframework/azure-client";
 import React, { useRef } from "react";
 import { useDrag } from "react-dnd";
-import { EntryData } from "../types/EntryData";
+import { EntryData, Position } from "../types/EntryData";
 import { EntryBody } from "./EntryBody.tsx";
   
   
   export type EntryProps = Readonly<{
     id: string;
     user: AzureMember;
-    setColumn: (position: number) => void;
-    setRow: (position: number) => void;
+    setPosition: (position: Position) => void;
     onDelete: () => void;
     setText: (text: string) => void;
   }> &
     Pick<
       EntryData,
       | "id"
-      | "numCol"
-      | "numRow"
+      | "position"
       | "content"
       | "author"
     >;
@@ -25,14 +23,21 @@ import { EntryBody } from "./EntryBody.tsx";
   export function Entry(props: EntryProps) {
     const {
       id,
-      numCol,
-      numRow,
+      position: {x: left, y:top},
       setText,
       content
     } = props;
+    
+    const [, drag] = useDrag(
+      () => ({
+        type: "note",
+        item: { id, left, top },
+      }),
+      [id, left, top]
+    );
 
     return (
-      <div className='root-class' style={{ }}>
+      <div className='root-class' ref={drag} style={{ left, top}}>
         <EntryBody setText={setText} content={content}/>
       </div>
     );
