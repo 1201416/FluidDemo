@@ -70,15 +70,14 @@ const BoardOpenedComponent: React.FC<BoardOpenedComponentProps>=(props: {contain
         members={members}
       />
       <div className='items-list'>
-        <EntriesList model={model}/>
-      </div>
-      <div>
-        <DndProvider backend={HTML5Backend}>
-        <EntrySpace
-          model = {model}
-          author = {authorInfo!}
-        />
-        </DndProvider>
+        <EntriesList model={model}>
+          <DndProvider backend={HTML5Backend}>
+            <EntrySpace
+              model = {model}
+              author = {authorInfo!}
+            />
+          </DndProvider>
+        </EntriesList>
       </div>
     </div>
   );

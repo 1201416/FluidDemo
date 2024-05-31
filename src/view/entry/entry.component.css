@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 10px; /* Adjust as needed */
+    gap: 10px; 
 }
   
   .board-entry {
@@ -22,12 +22,12 @@
   }
 
   .selecteditem {
-    font-size: 18px;
-  }
-  
-  .icon-wrapper {
-    position: relative;
-    text-align: center;
-    height: 30px;
-    margin-right: 8px;
-  }
+  font-size: 18px;
+}
+
+.icon-wrapper {
+  position: relative;
+  text-align: center;
+  height: 30px;
+  margin-right: 8px;
+}

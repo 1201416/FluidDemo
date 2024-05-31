@@ -1,14 +1,15 @@
 import { BoardModel } from "../../BoardModel.ts"
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { EntryData } from "../types/EntryData.ts";
 import './entry.component.css'
 
 export type EntriesProps ={
     model: BoardModel;
+    children?: ReactNode;
 }
 
 export function EntriesList(props: EntriesProps){
-    const {model} = props;
+    const {model, children} = props;
     const [entries, setEntries] = useState<readonly EntryData[]>([]);
 
     useEffect(() =>{
@@ -22,9 +23,9 @@ export function EntriesList(props: EntriesProps){
         return () => model.removeChangeListener(syncFluid)
     }, [model])
 
-    return(
+    return (
         <div className="board-grid">
-            {!!entries.length &&
+            {!!entries.length && (
                 <ul>
                     {entries.map((entry, i) => {
                         return (
@@ -33,10 +34,11 @@ export function EntriesList(props: EntriesProps){
                                     <div className="left selecteditem">{entry.content}</div>
                                 </div>
                             </li>
-                        )
+                        );
                     })}
                 </ul>
-            }
+            )}
+            {children}
         </div>
-    )
+    );
 }
