@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useCallback} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { AzureContainerServices } from "@fluidframework/azure-client";
 import { IFluidContainer } from "fluid-framework";
 import { BoardModel, createBoardModel } from '../../BoardModel.ts';
 import { EntriesList } from '../entry/EntriesList.component.tsx';
-import { EntrySpace } from '../entry/EntrySpace.tsx';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Header } from './Header.tsx';
@@ -14,7 +13,7 @@ interface BoardOpenedComponentProps {
   services: AzureContainerServices;
 }
 
-const BoardOpenedComponent: React.FC<BoardOpenedComponentProps>=(props: {container: IFluidContainer, services: AzureContainerServices})=>{
+const BoardOpenedComponent: React.FC<BoardOpenedComponentProps> = (props: { container: IFluidContainer, services: AzureContainerServices }) => {
   const { container, services } = props;
   const [model, setModel] = useState<BoardModel>(() => {
     return createBoardModel(container);
@@ -30,36 +29,36 @@ const BoardOpenedComponent: React.FC<BoardOpenedComponentProps>=(props: {contain
   ), [setMembers, audience]);
 
   useEffect(() => {
-      container.on("connected", setMembersCallback);
-      audience.on("membersChanged", setMembersCallback);
-      return () => {
-          container.off("connected", () => setMembersCallback);
-          audience.off("membersChanged", () => setMembersCallback);
-      };
-    }, [container, audience, setMembersCallback]);
+    container.on("connected", setMembersCallback);
+    audience.on("membersChanged", setMembersCallback);
+    return () => {
+      container.off("connected", setMembersCallback);
+      audience.off("membersChanged", setMembersCallback);
+    };
+  }, [container, audience, setMembersCallback]);
 
-
-  useEffect(() =>{
+  useEffect(() => {
     const handleValueChanged = () => {
       const modelo = model.entryIds;
-      if(modelo.length===0){
+      if (modelo.length === 0) {
         const entry: EntryData = {
           id: "asduhasdhashdu",
           author: authorInfo!,
           position: {
             x: 1,
             y: 2
-          }
-        }
-        model.SetEntry("asduashduah", entry)
+          },
+          content: "Initial Content"
+        };
+        model.SetEntry("asduashduah", entry);
       }
     };
-    
+
     model.setChangeListener(handleValueChanged);
     return () => {
       model.removeChangeListener(handleValueChanged);
-  };
-  }, [model])
+    };
+  }, [model, authorInfo]);
 
   return (
     <div>
@@ -70,14 +69,9 @@ const BoardOpenedComponent: React.FC<BoardOpenedComponentProps>=(props: {contain
         members={members}
       />
       <div className='items-list'>
-        <EntriesList model={model}>
-          <DndProvider backend={HTML5Backend}>
-            <EntrySpace
-              model = {model}
-              author = {authorInfo!}
-            />
-          </DndProvider>
-        </EntriesList>
+        <DndProvider backend={HTML5Backend}>
+          <EntriesList model={model} author={authorInfo!} />
+        </DndProvider>
       </div>
     </div>
   );

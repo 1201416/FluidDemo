@@ -3,9 +3,10 @@ import React, { useRef } from "react";
 import { useDrag } from "react-dnd";
 import { EntryData, Position } from "../types/EntryData";
 import { EntryBody } from "./EntryBody.tsx";
+import { BoardModel } from "../../BoardModel.ts";
   
   
-  export type EntryProps = Readonly<{
+export type EntryProps = Readonly<{
     id: string;
     user: AzureMember;
     setPosition: (position: Position) => void;

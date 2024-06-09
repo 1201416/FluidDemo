@@ -25,29 +25,7 @@ export const NOTE_SIZE = {
   export function Header(props: HeaderProps) {
     const personas = React.useMemo(() => props.members.map(member => {return { personaName: member.userName}}), [props.members]);
   
-    const {model} = props
-
-    const onAddEntry = () => {
-        const id = uuidv4();
-    
-        const newentry: EntryData = {
-          id: id,
-          position: {
-            x: Math.floor(Math.random() * (300 - NOTE_SIZE.width)),
-            y: Math.floor(Math.random() * (80 - NOTE_SIZE.height)),
-          },
-          author: props.author
-        };
-        model.SetEntry(id, newentry);
-        model.entryIds.push(id);
-    };
-
     const items: ICommandBarItemProps[] = [
-      {
-        key: "add",
-        text: "Add entry",
-        onClick: onAddEntry
-      }
     ];
   
     const farItems: ICommandBarItemProps[] = [

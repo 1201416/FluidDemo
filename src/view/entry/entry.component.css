@@ -31,3 +31,28 @@
   height: 30px;
   margin-right: 8px;
 }
+.board-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.columns-container {
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: fit-content;
+  overflow-x: auto;
+}
+
+.board-column {
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+  min-width: 250px;
+}
+.add-column-button {
+  margin-top: 0;
+  margin-left: 10px;
+}

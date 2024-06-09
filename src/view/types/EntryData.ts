@@ -8,4 +8,5 @@ export type EntryData = {
     position: Position;
     content?: string;
     author: AzureMember;
+    isBeingEdited?: boolean;
 }
